@@ -1,5 +1,7 @@
-import { use, useState } from "react"
+import {  useState } from "react"
 import DOMPurify from "dompurify"
+import { useNavigate } from 'react-router-dom'; // If using React Router
+import RecipeList from './RecipeList';
 import config from "../services/config"
 
 const apiKey = config.apiKey;
@@ -7,7 +9,7 @@ const api_url = config.api_url;
 
 export default function SearchBar(){
 
-
+    const navigate = useNavigate()
     const [recipe , setRecipe] = useState([])
     const [query , setQuery] = useState("")
     const [loading , setLoading] = useState(false)
@@ -25,8 +27,16 @@ export default function SearchBar(){
 
     function handleSubmit(){
         fetchRecipes()
-
     }
+
+
+    const handleRecipeClick = (recipeId) => {
+        console.log("Navigating to:", recipeId);
+        navigate(`/recipe/${recipeId}`); // Navigate to recipe detail page with the recipe ID
+    }
+
+
+
     return (
         <div>
             <div>
@@ -43,7 +53,7 @@ export default function SearchBar(){
                 </div>
                 {loading && (<div>loading... </div>)}
 
-                {recipe.map((meal) => (
+     {/*            {recipe.map((meal) => (
                     <div key={meal.id}>
                         <p>Name:{meal.title}</p>
                         <img src={meal.image} alt={meal.title} />
@@ -51,10 +61,14 @@ export default function SearchBar(){
   dangerouslySetInnerHTML={{
     __html: DOMPurify.sanitize(meal.summary)
   }}
-></p>
-                    </div>
-                )) }
-            </div>
+></p> 
+                    </div>    
+                )) }               */}
+            </div>          
+            <RecipeList
+        recipes={recipe}
+        onRecipeClick={handleRecipeClick}
+      />
 
         </div>
     )
